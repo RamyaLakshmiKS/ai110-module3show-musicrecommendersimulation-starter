@@ -111,6 +111,14 @@ pip install -r requirements.txt
 python -m src.main
 ```
 
+## Example Output
+
+Below is an example of the terminal output produced by running the recommender with the starter profile (`genre: pop`, `mood: happy`, `energy: 0.8`).
+
+![Top recommendations](screenshots/image.png)
+
+This screenshot shows the top recommendations, their final scores, and the bulleted reasons explaining why each song was recommended.
+
 ### Running Tests
 
 Run the starter tests with:
