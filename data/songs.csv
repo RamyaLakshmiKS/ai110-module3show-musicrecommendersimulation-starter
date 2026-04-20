@@ -9,3 +9,13 @@ id,title,artist,genre,mood,energy,tempo_bpm,valence,danceability,acousticness
 8,Night Drive Loop,Neon Echo,synthwave,moody,0.75,110,0.49,0.73,0.22
 9,Focus Flow,LoRoom,lofi,focused,0.40,80,0.59,0.60,0.78
 10,Rooftop Lights,Indigo Parade,indie pop,happy,0.76,124,0.81,0.82,0.35
+11,Moonlight Reverie,Aurora Strings,classical,ethereal,0.30,72,0.46,0.12,0.98
+12,Thunderforge,Iron Maw,heavy metal,aggressive,0.97,188,0.18,0.52,0.04
+13,Rio Sunset,Bossa Rosa,bossanova,nostalgic,0.55,98,0.70,0.68,0.83
+14,Delta Blues,Mississippi Shade,blues,melancholic,0.34,82,0.28,0.47,0.90
+15,Island Breeze,Wayfarer Crew,reggae,relaxed,0.46,74,0.66,0.72,0.76
+16,Neon Cathedral,VaporPulse,synthwave,melancholic,0.72,106,0.40,0.74,0.18
+17,Old Town Lullaby,Harper & The Pines,folk,nostalgic,0.38,84,0.58,0.50,0.94
+18,City Lights Freestyle,MC Orbit,hip hop,energetic,0.82,96,0.60,0.89,0.10
+19,Electric Pulse,Twin Circuit,electronic,euphoric,0.90,128,0.83,0.92,0.06
+20,Astral Drift,Celeste Ensemble,ambient,ethereal,0.25,60,0.36,0.22,0.97
