@@ -17,17 +17,74 @@ Replace this paragraph with your own summary of what your version does.
 
 ## How The System Works
 
-Explain your design in plain language.
+This project uses a content-based recommender: it compares a compact `UserProfile` to each song in `data/songs.csv` using a math-based Scoring Rule, then ranks candidates to produce Top-K recommendations.
 
-Some prompts to answer:
+```mermaid
+flowchart TD
+   U[User Preferences] --> L[Load data/songs.csv]
+   L --> Loop{For each song}
+   Loop --> Read[Read song attributes]
+   Read --> Cat[Categorical match: genre & mood]
+   Read --> Num[Numeric similarities: energy, valence, danceability, acousticness, tempo]
+   Cat --> NormCat[Normalize categorical (0..1)]
+   Num --> NormNum[Normalize numeric similarities (0..1)]
+   NormCat --> Score[Weighted sum -> Song score]
+   NormNum --> Score
+   Score --> Collect[Collect scores]
+   Collect --> Sort[Sort songs by score (desc)]
+   Sort --> Rerank[Optional diversity / artist cap]
+   Rerank --> Output[Top K recommendations]
+```
 
-- What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
-- What information does your `UserProfile` store
-- How does your `Recommender` compute a score for each song
-- How do you choose which songs to recommend
+Song features used in this simulation:
 
-You can include a simple diagram or bullet list if helpful.
+- `id`, `title`, `artist` (identifiers/metadata)
+- `genre` (categorical)
+- `mood` (categorical)
+- `energy` (numeric, 0–1)
+- `tempo_bpm` (numeric)
+- `valence` (numeric, 0–1)
+- `danceability` (numeric, 0–1)
+- `acousticness` (numeric, 0–1)
+
+`UserProfile` fields used in this simulation:
+
+- `liked_song_ids` (list of song ids the user likes)
+- `genre_preferences` (counts or normalized weights)
+- `avg_energy`, `avg_tempo_norm`, `avg_valence` (per-feature averages)
+- `preference_vector` (averaged song feature vector used for scoring)
+- `feature_weights` (optional weights to prioritize some features)
+
+**Algorithm Recipe**
+
+1. Input: load `UserProfile` (target genre, mood, `target_energy`, weights) and songs from `data/songs.csv`.
+2. For each song:
+    - Compute categorical score: `cat = 2*genre_match + 1*mood_match` then `Cat_norm = cat / 3`.
+    - Compute energy similarity using a Gaussian kernel:
+       $$S_e = \exp\left(-\dfrac{(e_{song}-e_{user})^2}{2\sigma^2}\right)$$
+       with a default `sigma = 0.15`.
+    - Compute additional numeric similarities (valence, danceability, acousticness) using the same Gaussian kernel or `1 - |x-y|` after normalizing tempo to [0,1].
+    - Normalize all component scores to [0,1].
+    - Combine with weights (sum to 1):
+       `Score = w_cat*Cat_norm + w_e*S_e + \sum_i w_i*S_i`.
+3. Collect song scores and sort descending.
+4. Optional re-ranking: apply artist caps or a diversity penalty: `new_score = score - \lambda * similarity_to_chosen`.
+5. Output Top K recommendations.
+
+**Weights & tuning**
+
+- Always normalize components so no attribute dominates.
+- Default example weights: `w_cat=0.3`, `w_e=0.5`, remaining (0.2) split across valence/danceability/acousticness.
+- Tune `sigma` and weights empirically on held-out preference examples.
+
+**Potential biases**
+
+- Over-prioritizing `genre` may ignore songs that better match the user's mood or energy.
+- A tiny catalog can amplify the presence of frequent genres or artists.
+- If numeric features are not properly normalized (e.g., tempo), they can unintentionally dominate scores.
+- No collaborative signals means the system misses popularity/long-tail signals and serendipity.
+
+Scoring & ranking (brief): the recommender computes the per-song `Score` above, sorts candidates, and applies simple re-ranking rules (artist caps or diversity penalty) before presenting the top results.
 
 ---
 
